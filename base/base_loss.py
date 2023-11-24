@@ -3,7 +3,7 @@ from torch import Tensor, nn
 
 class BaseLoss(nn.Module):
     def __init__(self, *args, **kwargs):
-        super(BaseLoss, self).__init__()
+        super().__init__()
         self.output = None
         self.target = None
 

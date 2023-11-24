@@ -1,7 +1,7 @@
 import hydra
 import torch
 import torch.nn as nn
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 
 import dataloaders
 import models
@@ -19,6 +19,7 @@ def get_instance(module, name: str, config: DictConfig, *args):
 def main(cfg: DictConfig):
     if cfg.resume:
         cfg = DictConfig(torch.load(cfg.resume)["config"])
+    OmegaConf.resolve(cfg)
 
     train_logger = Logger()
 

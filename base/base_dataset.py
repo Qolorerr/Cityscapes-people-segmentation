@@ -15,6 +15,7 @@ class BaseDataSet(Dataset):
         split: str,
         mean: list[float],
         std: list[float],
+        palette: list[int],
         base_size: int | None = None,
         augment: bool = True,
         val: bool = False,
@@ -43,7 +44,7 @@ class BaseDataSet(Dataset):
         self.to_tensor = transforms.ToTensor()
         self.normalize = transforms.Normalize(mean, std)
         self.return_id = return_id
-        self.palette: list[int] | None = None
+        self.palette = palette
 
         cv2.setNumThreads(0)
 

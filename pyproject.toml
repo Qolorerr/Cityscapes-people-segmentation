@@ -30,7 +30,7 @@ ignored-modules = ["matplotlib", "numpy"]
 generated-members = ["numpy.*"]
 
 [tool.pylint.FORMAT]
-max-line-length = 88
+max-line-length = 100
 max-attributes = 20
 max-public-methods = 20
 max-args = 15

@@ -6,55 +6,14 @@ from PIL import Image
 
 from base.base_dataloader import BaseDataLoader
 from base.base_dataset import BaseDataSet
-from utils import palette
-
-ignore_label = 255
-ID_TO_TRAINID = {
-    -1: ignore_label,
-    0: ignore_label,
-    1: ignore_label,
-    2: ignore_label,
-    3: ignore_label,
-    4: ignore_label,
-    5: ignore_label,
-    6: ignore_label,
-    7: 0,
-    8: 1,
-    9: ignore_label,
-    10: ignore_label,
-    11: 2,
-    12: 3,
-    13: 4,
-    14: ignore_label,
-    15: ignore_label,
-    16: ignore_label,
-    17: 5,
-    18: ignore_label,
-    19: 6,
-    20: 7,
-    21: 8,
-    22: 9,
-    23: 10,
-    24: 11,
-    25: 12,
-    26: 13,
-    27: 14,
-    28: 15,
-    29: ignore_label,
-    30: ignore_label,
-    31: 16,
-    32: 17,
-    33: 18,
-}
 
 
 class CityScapesDataset(BaseDataSet):
-    def __init__(self, mode: str = "fine", **kwargs):
+    def __init__(self, id_to_train_id: dict[int, int], mode: str = "fine", **kwargs):
         self.num_classes = 19
         self.mode = mode
-        self.palette = palette.CityScpates_palette
-        self.id_to_trainId = ID_TO_TRAINID
-        super(CityScapesDataset, self).__init__(**kwargs)
+        self.id_to_train_id = id_to_train_id
+        super().__init__(**kwargs)
 
     def _set_files(self):
         assert (self.mode == "fine" and self.split in ["train", "val"]) or (
@@ -86,7 +45,7 @@ class CityScapesDataset(BaseDataSet):
         image_id = os.path.splitext(os.path.basename(image_path))[0]
         image = np.asarray(Image.open(image_path).convert("RGB"), dtype=np.float32)
         label = np.asarray(Image.open(label_path), dtype=np.int32)
-        for k, v in self.id_to_trainId.items():
+        for k, v in self.id_to_train_id.items():
             label[label == k] = v
         return image, label, image_id
 
@@ -97,6 +56,8 @@ class CityScapes(BaseDataLoader):
         data_dir: str,
         batch_size: int,
         split: str,
+        palette: list[int],
+        id_to_train_id: dict[int, int],
         crop_size: int | None = None,
         base_size: int | None = None,
         scale: bool = True,
@@ -128,7 +89,8 @@ class CityScapes(BaseDataLoader):
             "rotate": rotate,
             "return_id": return_id,
             "val": val,
+            "palette": palette
         }
 
-        self.dataset = CityScapesDataset(mode=mode, **kwargs)
-        super(CityScapes, self).__init__(self.dataset, batch_size, shuffle, num_workers, val_split)
+        self.dataset = CityScapesDataset(id_to_train_id=id_to_train_id, mode=mode, **kwargs)
+        super().__init__(self.dataset, batch_size, shuffle, num_workers, val_split)

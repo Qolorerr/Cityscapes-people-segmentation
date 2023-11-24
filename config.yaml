@@ -8,6 +8,9 @@ arch:
     freeze_bn: False
     freeze_backbone: False
 
+defaults:
+   - palette: cityscapes
+
 train_loader:
   type: CityScapes
   args:
@@ -23,6 +26,8 @@ train_loader:
     blur: False
     split: train
     num_workers: 8
+    palette: ${palette.palette}
+    id_to_train_id: ${palette.id_to_train_id}
 
 val_loader:
   type: CityScapes
@@ -33,6 +38,8 @@ val_loader:
     val: True
     split: val
     num_workers: 4
+    palette: ${palette.palette}
+    id_to_train_id: ${palette.id_to_train_id}
 
 optimizer:
   type: SGD

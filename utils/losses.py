@@ -37,7 +37,7 @@ class CrossEntropyLoss2d(BaseLoss):
         ignore_index: int = 255,
         reduction: str = "mean",
     ):
-        super(CrossEntropyLoss2d, self).__init__()
+        super().__init__()
         self.CE = nn.CrossEntropyLoss(weight=weight, ignore_index=ignore_index, reduction=reduction)
 
     def _forward(self, output: Tensor, target: Tensor) -> Tensor:
@@ -47,7 +47,7 @@ class CrossEntropyLoss2d(BaseLoss):
 
 class DiceLoss(BaseLoss):
     def __init__(self, smooth: float = 1.0, ignore_index: int = 255):
-        super(DiceLoss, self).__init__()
+        super().__init__()
         self.ignore_index = ignore_index
         self.smooth = smooth
 
@@ -75,7 +75,7 @@ class FocalLoss(BaseLoss):
         ignore_index: int = 255,
         size_average: bool = True,
     ):
-        super(FocalLoss, self).__init__()
+        super().__init__()
         self.gamma = gamma
         self.size_average = size_average
         self.CE_loss = nn.CrossEntropyLoss(reduce=False, ignore_index=ignore_index, weight=alpha)
@@ -91,7 +91,7 @@ class FocalLoss(BaseLoss):
 
 class CE_DiceLoss(BaseLoss):
     def __init__(self, smooth=1, reduction="mean", ignore_index=255, weight=None):
-        super(CE_DiceLoss, self).__init__()
+        super().__init__()
         self.dice = DiceLoss(smooth=smooth, ignore_index=ignore_index)
         self.cross_entropy = nn.CrossEntropyLoss(
             weight=weight, reduction=reduction, ignore_index=ignore_index
@@ -105,7 +105,7 @@ class CE_DiceLoss(BaseLoss):
 
 class LovaszSoftmax(BaseLoss):
     def __init__(self, classes: str = "present", per_image: bool = False, ignore_index: int = 255):
-        super(LovaszSoftmax, self).__init__()
+        super().__init__()
         self.classes = classes
         self.per_image = per_image
         self.ignore_index = ignore_index
