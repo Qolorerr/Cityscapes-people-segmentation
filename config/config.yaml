@@ -1,0 +1,74 @@
+name: PSPNet
+n_gpu: 1
+use_synch_bn: False
+model:
+  _target_: src.models.PSPNet
+  backbone:
+    _target_: src.models.resnet.resnet50
+    pretrained: True
+    root: .\pretrainted
+  freeze_bn: False
+  freeze_backbone: False
+
+defaults:
+   - _self_
+   - palette: cityscapes
+
+train_loader:
+  _target_: src.dataloaders.CityScapes
+  data_dir: C:\Documents\Datasets\CityScapes
+  batch_size: 8
+  base_size: 400
+  crop_size: 380
+  augment: True
+  shuffle: True
+  scale: True
+  flip: True
+  rotate: True
+  blur: False
+  split: train
+  num_workers: 8
+  palette: ${palette.palette}
+  id_to_train_id: ${palette.id_to_train_id}
+
+val_loader:
+  _target_: src.dataloaders.CityScapes
+  data_dir: C:\Documents\Datasets\CityScapes
+  batch_size: 8
+  crop_size: 480
+  val: True
+  split: val
+  num_workers: 4
+  palette: ${palette.palette}
+  id_to_train_id: ${palette.id_to_train_id}
+
+differential_lr: True
+optimizer:
+  _target_: torch.optim.SGD
+  lr: 0.01
+  weight_decay: 1e-4
+  momentum: 0.9
+
+ignore_index: 255
+
+loss:
+  _target_: src.utils.losses.CrossEntropyLoss2d
+  ignore_index: ${ignore_index}
+
+lr_scheduler:
+  _target_: src.utils.lr_scheduler.Poly
+
+trainer:
+  epochs: 80
+  save_dir: saved/
+  save_period: 10
+  monitor: max Mean_IoU
+  early_stop: 10
+  tensorboard: True
+  log_dir: saved/runs
+  log_per_iter: 20
+  val: True
+  val_per_epochs: 5
+
+resume:
+device:

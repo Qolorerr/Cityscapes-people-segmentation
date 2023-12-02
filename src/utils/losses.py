@@ -4,8 +4,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
 
-from base.base_loss import BaseLoss
-from utils.lovasz_losses import lovasz_softmax
+from src.base.base_loss import BaseLoss
+from src.utils.lovasz_losses import lovasz_softmax
 
 
 def make_one_hot(labels, classes):

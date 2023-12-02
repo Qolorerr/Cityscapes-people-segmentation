@@ -4,9 +4,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from base.base_model import BaseModel
-from models import resnet
-from utils.helpers import initialize_weights, set_trainable
+from src.base.base_model import BaseModel
+from src.models import resnet
+from src.utils.helpers import initialize_weights, set_trainable
 
 
 def x2conv(in_channels, out_channels, inner_channels=None):

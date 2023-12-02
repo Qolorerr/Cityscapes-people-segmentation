@@ -5,8 +5,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import models
 
-from base.base_model import BaseModel
-from utils.helpers import initialize_weights, set_trainable
+from src.base.base_model import BaseModel
+from src.utils.helpers import initialize_weights, set_trainable
 
 
 class PSPModule(nn.Module):

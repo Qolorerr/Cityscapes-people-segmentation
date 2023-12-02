@@ -6,7 +6,6 @@ from glob import glob
 from math import ceil
 
 import numpy as np
-import scipy
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -15,9 +14,8 @@ from scipy import ndimage
 from torchvision import transforms
 from tqdm import tqdm
 
-import dataloaders
-import models
-from utils.helpers import colorize_mask
+from src import dataloaders, models
+from src.utils import colorize_mask
 
 
 def pad_image(img, target_size):

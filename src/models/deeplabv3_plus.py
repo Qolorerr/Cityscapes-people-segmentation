@@ -6,8 +6,8 @@ import torch.nn.functional as F
 import torch.utils.model_zoo as model_zoo
 from torchvision import models
 
-from base.base_model import BaseModel
-from utils.helpers import initialize_weights, set_trainable
+from src.base.base_model import BaseModel
+from src.utils.helpers import initialize_weights, set_trainable
 
 """ 
 -> ResNet BackBone

@@ -3,8 +3,8 @@ from itertools import chain
 import torch.nn as nn
 from torchvision import models
 
-from base.base_model import BaseModel
-from utils.helpers import get_upsampling_weight, set_trainable
+from src.base.base_model import BaseModel
+from src.utils.helpers import get_upsampling_weight, set_trainable
 
 
 class FCN8(BaseModel):

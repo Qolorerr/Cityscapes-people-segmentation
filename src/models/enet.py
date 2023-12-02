@@ -2,8 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from base.base_model import BaseModel
-from utils.helpers import initialize_weights
+from src.base.base_model import BaseModel
+from src.utils.helpers import initialize_weights
 
 
 class InitalBlock(nn.Module):

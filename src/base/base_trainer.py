@@ -7,13 +7,13 @@ import numpy as np
 import torch
 import torch.nn as nn
 from accelerate import Accelerator
+from hydra.utils import instantiate
 from omegaconf import DictConfig
 from torch.utils import tensorboard
 
-import utils.lr_scheduler
-from base.base_dataloader import BaseDataLoader
-from base.base_model import BaseModel
-from utils import Logger
+from src.base.base_dataloader import BaseDataLoader
+from src.base.base_model import BaseModel
+from src.utils import Logger
 
 
 def get_instance(module, name, config, *args):
@@ -53,7 +53,7 @@ class BaseTrainer:
         self.save_period = cfg_trainer["save_period"]
 
         # OPTIMIZER
-        if self.config["optimizer"]["differential_lr"]:
+        if self.config["differential_lr"]:
             if isinstance(self.model, torch.nn.DataParallel):
                 decoder_params = self.model.module.get_decoder_params()
                 backbone_params = self.model.module.get_backbone_params()
@@ -64,15 +64,13 @@ class BaseTrainer:
                 {"params": filter(lambda p: p.requires_grad, decoder_params)},
                 {
                     "params": filter(lambda p: p.requires_grad, backbone_params),
-                    "lr": config["optimizer"]["args"]["lr"] / 10,
+                    "lr": config["optimizer"]["lr"] / 10,
                 },
             ]
         else:
             trainable_params = filter(lambda p: p.requires_grad, self.model.parameters())
-        self.optimizer = get_instance(torch.optim, "optimizer", config, trainable_params)
-        self.lr_scheduler = getattr(utils.lr_scheduler, config["lr_scheduler"]["type"])(
-            self.optimizer, self.epochs, len(train_loader)
-        )
+        self.optimizer = instantiate(self.config.optimizer, trainable_params)
+        self.lr_scheduler = instantiate(self.config.lr_scheduler, self.optimizer, self.epochs, len(train_loader))
         self.optimizer, self.lr_scheduler = self.accelerator.prepare(
             self.optimizer, self.lr_scheduler
         )
@@ -169,13 +167,13 @@ class BaseTrainer:
         self.mnt_best = checkpoint["monitor_best"]
         self.not_improved_count = 0
 
-        if checkpoint["config"]["arch"] != self.config["arch"]:
+        if checkpoint["config"]["model"] != self.config["model"]:
             self.logger.warning(
                 {"Warning! Current model is not the same as the one in the checkpoint"}
             )
         self.model.load_state_dict(checkpoint["state_dict"])
 
-        if checkpoint["config"]["optimizer"]["type"] != self.config["optimizer"]["type"]:
+        if checkpoint["config"]["optimizer"]["_target_"] != self.config["optimizer"]["_target_"]:
             self.logger.warning(
                 {"Warning! Current optimizer is not the same as the one in the checkpoint"}
             )

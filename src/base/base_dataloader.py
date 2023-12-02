@@ -2,7 +2,7 @@ import numpy as np
 from torch.utils.data import DataLoader
 from torch.utils.data.sampler import SubsetRandomSampler
 
-from base.base_dataset import BaseDataSet
+from src.base.base_dataset import BaseDataSet
 
 
 class BaseDataLoader(DataLoader):

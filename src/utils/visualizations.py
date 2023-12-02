@@ -3,9 +3,9 @@ from torch import Tensor
 from torchvision import transforms
 from torchvision.utils import make_grid
 
-from base.base_dataloader import BaseDataLoader
-from utils import transforms as local_transforms
-from utils.helpers import colorize_mask
+from src.base.base_dataloader import BaseDataLoader
+from src.utils import transforms as local_transforms
+from src.utils.helpers import colorize_mask
 
 
 class Visualization:

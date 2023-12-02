@@ -1,13 +1,15 @@
 from itertools import chain
+from typing import Callable
 
 import torch
 import torch.nn.functional as F
+import torchvision.models
 from torch import nn
-from torchvision import models
 
-from base.base_model import BaseModel
-from models import resnet
-from utils.helpers import initialize_weights, set_trainable
+from src.base.base_model import BaseModel
+from src.models import resnet
+from src.models.resnet import ResNet
+from src.utils.helpers import initialize_weights, set_trainable
 
 
 class _PSPModule(nn.Module):
@@ -56,15 +58,14 @@ class PSPNet(BaseModel):
         self,
         num_classes: int,
         in_channels: int = 3,
-        backbone: str = "resnet152",
-        pretrained: bool = True,
+        backbone: ResNet = resnet.resnet50(pretrained=True, root="./pretrainted"),
         use_aux: bool = True,
         freeze_bn: bool = False,
         freeze_backbone: bool = False,
     ):
         super(PSPNet, self).__init__()
         norm_layer = nn.BatchNorm2d
-        model = getattr(resnet, backbone)(pretrained, norm_layer=norm_layer)
+        model: ResNet = backbone
         m_out_sz = model.fc.in_features
         self.use_aux = use_aux
 
@@ -145,7 +146,7 @@ class PSPDenseNet(BaseModel):
         self,
         num_classes,
         in_channels=3,
-        backbone="densenet201",
+        backbone: Callable = torchvision.models.densenet201,
         pretrained=True,
         use_aux=True,
         freeze_bn=False,
@@ -153,7 +154,7 @@ class PSPDenseNet(BaseModel):
     ):
         super(PSPDenseNet, self).__init__()
         self.use_aux = use_aux
-        model = getattr(models, backbone)(pretrained)
+        model: ResNet = backbone(pretrained)
         m_out_sz = model.classifier.in_features
         aux_out_sz = model.features.transition3.conv.out_channels
 

@@ -4,8 +4,8 @@ from glob import glob
 import numpy as np
 from PIL import Image
 
-from base.base_dataloader import BaseDataLoader
-from base.base_dataset import BaseDataSet
+from src.base.base_dataloader import BaseDataLoader
+from src.base.base_dataset import BaseDataSet
 
 
 class CityScapesDataset(BaseDataSet):

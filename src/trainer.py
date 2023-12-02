@@ -6,12 +6,12 @@ import torch.nn as nn
 from omegaconf import DictConfig
 from tqdm import tqdm
 
-from base.base_dataloader import BaseDataLoader
-from base.base_model import BaseModel
-from base.base_trainer import BaseTrainer
-from utils import Logger
-from utils.metrics import AverageMeter, eval_metrics
-from utils.visualizations import Visualization
+from .base.base_dataloader import BaseDataLoader
+from .base.base_model import BaseModel
+from .base.base_trainer import BaseTrainer
+from .utils import Logger
+from .utils.metrics import AverageMeter, eval_metrics
+from .utils.visualizations import Visualization
 
 
 class Trainer(BaseTrainer):
@@ -71,7 +71,7 @@ class Trainer(BaseTrainer):
 
     def _train_epoch(self, epoch: int) -> dict[str, np.ndarray]:
         self.model.train()
-        if self.config["arch"]["args"]["freeze_bn"]:
+        if self.config["model"]["freeze_bn"]:
             if isinstance(self.model, torch.nn.DataParallel):
                 self.model.module.freeze_bn()
             else:
@@ -88,13 +88,13 @@ class Trainer(BaseTrainer):
             # LOSS & OPTIMIZE
             self.optimizer.zero_grad()
             outputs = self.model(inputs)
-            if self.config["arch"]["type"][:3] == "PSP":
+            loss = self.loss(outputs, targets, self.config['model']['_target_'].split('.')[-1], self.num_classes)
+            if self.config['model']['_target_'].split('.')[-1][:3] == "PSP":
                 outputs = outputs[0]
-            loss = self.loss(outputs, targets, self.config["arch"]["type"], self.num_classes)
 
             if isinstance(self.loss, torch.nn.DataParallel):
                 loss = loss.mean()
-            self.accelerator.backward()
+            self.accelerator.backward(loss)
             self.optimizer.step()
             self.total_loss.update(loss.item())
 
@@ -141,7 +141,7 @@ class Trainer(BaseTrainer):
             for batch_idx, (data, targets) in enumerate(tbar):
                 # LOSS
                 output = self.model(data)
-                loss = self.loss(output, targets, self.config["arch"]["type"], self.num_classes)
+                loss = self.loss(output, targets, self.config['model']['_target_'].split('.')[-1], self.num_classes)
                 if isinstance(self.loss, torch.nn.DataParallel):
                     loss = loss.mean()
                 self.total_loss.update(loss.item())
