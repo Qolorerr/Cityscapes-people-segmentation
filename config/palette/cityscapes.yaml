@@ -42,30 +42,30 @@ id_to_train_id:
   4: ${..ignore_label}
   5: ${..ignore_label}
   6: ${..ignore_label}
-  7: 0
-  8: 1
+  7: ${..ignore_label}
+  8: ${..ignore_label}
   9: ${..ignore_label}
   10: ${..ignore_label}
-  11: 2
-  12: 3
-  13: 4
+  11: ${..ignore_label}
+  12: ${..ignore_label}
+  13: ${..ignore_label}
   14: ${..ignore_label}
   15: ${..ignore_label}
   16: ${..ignore_label}
-  17: 5
+  17: ${..ignore_label}
   18: ${..ignore_label}
-  19: 6
-  20: 7
-  21: 8
-  22: 9
-  23: 10
-  24: 11
-  25: 12
-  26: 13
-  27: 14
-  28: 15
+  19: ${..ignore_label}
+  20: ${..ignore_label}
+  21: ${..ignore_label}
+  22: ${..ignore_label}
+  23: ${..ignore_label}
+  24: 1
+  25: 2
+  26: ${..ignore_label}
+  27: ${..ignore_label}
+  28: ${..ignore_label}
   29: ${..ignore_label}
   30: ${..ignore_label}
-  31: 16
-  32: 17
-  33: 18
+  31: ${..ignore_label}
+  32: ${..ignore_label}
+  33: ${..ignore_label}

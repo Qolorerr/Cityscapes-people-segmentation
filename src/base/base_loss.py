@@ -11,8 +11,6 @@ class BaseLoss(nn.Module):
         self.output = output
         self.target = target
         if model_type[:3] == "PSP":
-            print(output[0].size(), target.size())
-            print(num_classes)
             assert output[0].size()[2:] == target.size()[1:]
             assert output[0].size()[1] == num_classes
             loss = self._forward(output[0], target)

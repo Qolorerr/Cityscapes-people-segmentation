@@ -58,12 +58,14 @@ class PSPNet(BaseModel):
         self,
         num_classes: int,
         in_channels: int = 3,
-        backbone: ResNet = resnet.resnet50(pretrained=True, root="./pretrainted"),
+        backbone: nn.Module = None,
         use_aux: bool = True,
         freeze_bn: bool = False,
         freeze_backbone: bool = False,
     ):
         super(PSPNet, self).__init__()
+        if not backbone:
+            backbone = resnet.resnet50(pretrained=True)
         norm_layer = nn.BatchNorm2d
         model: ResNet = backbone
         m_out_sz = model.fc.in_features

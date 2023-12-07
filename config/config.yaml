@@ -6,7 +6,7 @@ model:
   backbone:
     _target_: src.models.resnet.resnet50
     pretrained: True
-    root: .\pretrainted
+    root: C:\Documents\Programs\Projects\Cityscapes-people-segmentation\pretrained
   freeze_bn: False
   freeze_backbone: False
 
@@ -71,4 +71,3 @@ trainer:
   val_per_epochs: 5
 
 resume:
-device:
