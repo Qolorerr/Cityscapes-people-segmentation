@@ -1,4 +1,5 @@
 import datetime
+import json
 import logging
 import math
 import os
@@ -13,7 +14,7 @@ from torch.utils import tensorboard
 
 from src.base.base_dataloader import BaseDataLoader
 from src.base.base_model import BaseModel
-from src.utils import Logger
+from src.utils import Logger, helpers
 
 
 def get_instance(module, name, config, *args):
@@ -42,7 +43,7 @@ class BaseTrainer:
         self.do_validation = self.config["trainer"]["val"]
         self.start_epoch = 1
         self.improved = False
-        self.accelerator = Accelerator()
+        self.accelerator = Accelerator(cpu=False)  # , mixed_precision="fp16")
 
         # SETTING THE DEVICE
         self.model = self.accelerator.prepare(self.model)
@@ -88,6 +89,8 @@ class BaseTrainer:
 
         # CHECKPOINTS & TENSORBOARD
         start_time = datetime.datetime.now().strftime("%m-%d_%H-%M")
+        self.checkpoint_dir = os.path.join(cfg_trainer["save_dir"], self.config["name"], start_time)
+        helpers.dir_exists(self.checkpoint_dir)
         writer_dir = os.path.join(cfg_trainer["log_dir"], self.config["name"], start_time)
         self.writer = tensorboard.SummaryWriter(writer_dir)
 
@@ -142,7 +145,6 @@ class BaseTrainer:
 
     def _save_checkpoint(self, epoch, save_best=False) -> None:
         state = {
-            "arch": type(self.model).__name__,
             "epoch": epoch,
             "state_dict": self.model.state_dict(),
             "optimizer": self.optimizer.state_dict(),

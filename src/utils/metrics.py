@@ -62,7 +62,7 @@ def batch_intersection_union(predict, target, num_class, labeled):
 
 
 def eval_metrics(output, target, num_class):
-    _, predict = torch.max(output.data, 1)
+    predict = (output >= 0.5).long()
     predict = predict + 1
     target = target + 1
 

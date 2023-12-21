@@ -116,11 +116,13 @@ class PSPNet(BaseModel):
         output = self.master_branch(x)
         output = F.interpolate(output, size=input_size, mode="bilinear")
         output = output[:, :, : input_size[0], : input_size[1]]
+        output = output.squeeze(1)
 
         if self.training and self.use_aux:
             aux = self.auxiliary_branch(x_aux)
             aux = F.interpolate(aux, size=input_size, mode="bilinear")
             aux = aux[:, :, : input_size[0], : input_size[1]]
+            aux = aux.squeeze(1)
             return output, aux
         return output
 

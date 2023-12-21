@@ -25,7 +25,7 @@ class Visualization:
     def add_to_visual(self, targets: Tensor, outputs: Tensor) -> None:
         if len(self.visual) < 15:
             target_np = targets.data.cpu().numpy()
-            output_np = outputs.data.max(1)[1].cpu().numpy()
+            output_np = (outputs >= 0.5).long().cpu().numpy()
             self.visual.append([outputs[0].data.cpu(), target_np[0], output_np[0]])
 
     def flush_visual(self) -> Tensor:

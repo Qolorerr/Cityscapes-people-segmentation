@@ -10,7 +10,7 @@ from src.base.base_dataset import BaseDataSet
 
 class CityScapesDataset(BaseDataSet):
     def __init__(self, id_to_train_id: dict[int, int], mode: str = "fine", **kwargs):
-        self.num_classes = 19
+        self.num_classes = len(set(id_to_train_id.values()))
         self.mode = mode
         self.id_to_train_id = id_to_train_id
         super().__init__(**kwargs)

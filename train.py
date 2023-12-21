@@ -12,8 +12,10 @@ from src.utils import Logger
 
 @hydra.main(version_base='1.1', config_path="config", config_name="config")
 def main(cfg: DictConfig):
-    if cfg.resume:
-        cfg = DictConfig(torch.load(cfg.resume)["config"])
+    resume = cfg.resume
+    if resume:
+        cfg = DictConfig(torch.load(resume)["config"])
+        cfg.resume = resume
 
     train_logger = Logger()
 
@@ -22,7 +24,7 @@ def main(cfg: DictConfig):
     val_loader: BaseDataLoader = instantiate(cfg.val_loader)
 
     # MODEL
-    model: BaseModel = instantiate(cfg.model, train_loader.dataset.num_classes)
+    model: BaseModel = instantiate(cfg.model, 1)
     print(f"\n{model}\n")
 
     # LOSS

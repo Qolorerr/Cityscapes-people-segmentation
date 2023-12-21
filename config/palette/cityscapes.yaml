@@ -32,7 +32,7 @@ palette: [128,64,128,244,35,232,70,70,70,102,102,156,190,153,153,153,153,153,
           192,32,224,192,160,224,192,96,96,64,224,96,64,96,224,64,224,224,64,96,96,192,224,
           96,192,96,224,192,0,0,0]
 
-ignore_label: 255
+ignore_label: 0
 id_to_train_id:
   -1: ${..ignore_label}
   0: ${..ignore_label}
@@ -60,7 +60,7 @@ id_to_train_id:
   22: ${..ignore_label}
   23: ${..ignore_label}
   24: 1
-  25: 2
+  25: 1
   26: ${..ignore_label}
   27: ${..ignore_label}
   28: ${..ignore_label}

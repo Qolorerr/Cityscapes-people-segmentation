@@ -38,11 +38,53 @@ class CrossEntropyLoss2d(BaseLoss):
         reduction: str = "mean",
     ):
         super().__init__()
-        self.CE = nn.CrossEntropyLoss(weight=weight, ignore_index=ignore_index, reduction=reduction)
+        self.ignore_index = ignore_index
+        self.CE = nn.CrossEntropyLoss(weight=weight, reduction=reduction)
 
     def _forward(self, output: Tensor, target: Tensor) -> Tensor:
+        output = F.softmax(output, dim=1)
+        not_empty_images = torch.nonzero(target != self.ignore_index, as_tuple=False)
+        if not_empty_images.numel() == 0:
+            zero_tensor = output * 0
+            zero_tensor = zero_tensor.sum()
+            return zero_tensor
         loss = self.CE(output, target)
         return loss
+
+
+class SampleWeightedBCELoss(BaseLoss):
+    def __init__(
+        self,
+        reduction: str = "mean",
+        balance: float = 1
+    ):
+        super().__init__()
+        self.reduction = reduction
+        self.balance = balance
+
+    def _forward(self, output: Tensor, target: Tensor) -> Tensor:  # pylint: disable=W0622
+        return F.binary_cross_entropy_with_logits(
+            input=output,
+            target=target.float(),
+            weight=_compute_sample_weights(output=output, targets=target, balance=self.balance),
+            reduction=self.reduction,
+        )
+
+
+def _compute_sample_weights(output: Tensor, targets: Tensor, balance: float) -> Tensor:
+    with torch.no_grad():
+        weights = torch.zeros_like(output)
+        samples_num = output.size()[0]
+        for sample_idx in range(samples_num):
+            t = targets[sample_idx, :, :]
+            pos = (t == 1).sum()
+            neg = (t == 0).sum()
+            total = pos + neg
+
+            weights[sample_idx, t == 1] = neg / total
+            weights[sample_idx, t == 0] = pos * balance / total
+
+    return weights
 
 
 class DiceLoss(BaseLoss):

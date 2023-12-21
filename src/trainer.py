@@ -63,7 +63,7 @@ class Trainer(BaseTrainer):
         # PRINT INFO
         message = "{} ({}) | Loss: {:.3f}, PixelAcc: {:.2f}, Mean IoU: {:.2f} |"
         message = message.format(mode, epoch, self.total_loss.average, pixAcc, mIoU)
-        if mode == "EVAL":
+        if mode == "TRAIN":
             message += " B {:.2f} D {:.2f} |".format(
                 self.batch_time.average, self.data_time.average
             )
@@ -88,7 +88,7 @@ class Trainer(BaseTrainer):
             # LOSS & OPTIMIZE
             self.optimizer.zero_grad()
             outputs = self.model(inputs)
-            loss = self.loss(outputs, targets, self.config['model']['_target_'].split('.')[-1], self.num_classes)
+            loss = self.loss(outputs, targets, self.num_classes)
             if self.config['model']['_target_'].split('.')[-1][:3] == "PSP":
                 outputs = outputs[0]
 
@@ -141,7 +141,7 @@ class Trainer(BaseTrainer):
             for batch_idx, (data, targets) in enumerate(tbar):
                 # LOSS
                 output = self.model(data)
-                loss = self.loss(output, targets, self.config['model']['_target_'].split('.')[-1], self.num_classes)
+                loss = self.loss(output, targets, self.num_classes)
                 if isinstance(self.loss, torch.nn.DataParallel):
                     loss = loss.mean()
                 self.total_loss.update(loss.item())
